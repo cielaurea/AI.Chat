@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from domain.tools import ToolName
+from domain.ports import LlmProviderPort
+from domain.tools import ToolName, TOOL_CATALOG
 
 
 @dataclass
@@ -8,36 +9,80 @@ class Plan:
     """
     Représente le résultat de l'étape de planification.
 
-    Le plan indique simplement quel outil doit être utilisé.
-    Si aucune demande autorisée n'est détectée, tool vaut None.
+    Le plan indique quel outil doit être utilisé.
+    Si le modèle considère que la demande est hors périmètre,
+    tool vaut None.
     """
 
     tool: ToolName | None
 
 
-def create_plan(message: str) -> Plan:
+def create_plan(
+    message: str,
+    llm_provider: LlmProviderPort,
+) -> Plan:
     """
-    Analyse le message de l'utilisateur et détermine l'outil à utiliser.
+    Demande au modèle de déterminer l'outil correspondant à la question.
 
-    Pour notre test, l'assistant ne doit gérer que deux demandes :
-    - lister les clients ;
-    - lister les articles.
+    Le modèle reçoit :
+    - la question de l'utilisateur ;
+    - le catalogue des outils disponibles.
 
-    Toute autre demande reste hors périmètre.
+    Il doit choisir :
+    - lister_clients ;
+    - lister_articles ;
+    - aucun outil.
+
+    Cette fonction appartient à la couche application.
+    Elle ne connaît pas Ollama ni HTTP :
+    elle communique uniquement avec LlmProviderPort.
     """
 
-    # On met le message en minuscules et on retire les espaces inutiles
-    # afin de faciliter les comparaisons.
-    normalized_message = message.strip().lower()
+    # On construit la description des outils disponibles
+    # à partir du catalogue défini dans le domaine.
+    tools_description = "\n".join(
+        f"- {tool.name.value} : {tool.description}"
+        for tool in TOOL_CATALOG
+    )
 
-    # Si le message parle des clients, on sélectionne l'outil correspondant.
-    if "client" in normalized_message:
+    # Le prompt donne au modèle une règle très stricte :
+    # il ne peut choisir qu'un outil du catalogue ou "aucun".
+    prompt = f"""
+Tu es le module de décision d'un assistant.
+
+Ton rôle est uniquement de déterminer quel outil utiliser
+pour répondre à la question de l'utilisateur.
+
+Outils disponibles :
+{tools_description}
+
+Règles :
+- Si la question demande la liste des clients, réponds exactement : lister_clients
+- Si la question demande la liste des articles ou des produits, réponds exactement : lister_articles
+- Pour toute autre question, réponds exactement : aucun
+
+Tu dois répondre avec une seule valeur parmi :
+lister_clients
+lister_articles
+aucun
+
+Question de l'utilisateur :
+{message}
+""".strip()
+
+    # L'application utilise uniquement le port LlmProviderPort.
+    # Elle ne sait pas si le modèle est fourni par Ollama ou par une autre technologie.
+    model_response = llm_provider.generate(prompt).strip().lower()
+
+    # Le modèle a choisi l'outil permettant de récupérer les clients.
+    if model_response == ToolName.LISTER_CLIENTS.value:
         return Plan(tool=ToolName.LISTER_CLIENTS)
 
-    # Si le message parle des articles, on sélectionne l'outil correspondant.
-    if "article" in normalized_message:
+    # Le modèle a choisi l'outil permettant de récupérer les articles.
+    if model_response == ToolName.LISTER_ARTICLES.value:
         return Plan(tool=ToolName.LISTER_ARTICLES)
 
-    # Si aucune demande connue n'est détectée,
-    # aucun outil ne doit être exécuté.
+    # Toute autre réponse du modèle est considérée comme hors périmètre.
+    # Cela permet d'éviter qu'une réponse inattendue entraîne l'exécution
+    # d'un outil qui n'a pas été explicitement autorisé.
     return Plan(tool=None)

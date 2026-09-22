@@ -32,3 +32,27 @@ class DataProviderPort(ABC):
         L'implémentation concrète décidera comment les récupérer.
         """
         pass
+
+
+class LlmProviderPort(ABC):
+    """
+    Interface utilisée par l'application pour communiquer avec
+    un modèle de langage.
+
+    Le domaine définit uniquement ce dont l'application a besoin :
+    envoyer une question au modèle et recevoir sa réponse.
+
+    Il ne connaît pas Ollama, HTTP, une clé API ou un modèle particulier.
+
+    L'implémentation concrète sera placée dans infrastructure/providers/.
+    """
+
+    @abstractmethod
+    def generate(self, prompt: str) -> str:
+        """
+        Envoie un prompt au modèle et retourne sa réponse sous forme de texte.
+
+        L'application utilise cette méthode sans connaître
+        la technologie utilisée derrière.
+        """
+        pass
