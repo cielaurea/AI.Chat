@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from domain.ports import LlmProviderPort
-from domain.tools import ToolName, TOOL_CATALOG
+from domain.ports import LlmProviderPort, ToolRegistryPort
+from domain.tools import ToolName
 
 
 @dataclass
@@ -20,6 +20,7 @@ class Plan:
 def create_plan(
     message: str,
     llm_provider: LlmProviderPort,
+    tool_registry: ToolRegistryPort,
 ) -> Plan:
     """
     Demande au modèle de déterminer l'outil correspondant à la question.
@@ -28,21 +29,24 @@ def create_plan(
     - la question de l'utilisateur ;
     - le catalogue des outils disponibles.
 
-    Il doit choisir :
-    - lister_clients ;
-    - lister_articles ;
-    - aucun outil.
+    Le catalogue est obtenu via ToolRegistryPort.
+    L'application ne dépend donc pas directement
+    de l'implémentation concrète du registre.
 
     Cette fonction appartient à la couche application.
-    Elle ne connaît pas Ollama ni HTTP :
-    elle communique uniquement avec LlmProviderPort.
+    Elle ne connaît pas Ollama ni la manière dont le catalogue
+    est réellement stocké.
     """
 
-    # On construit la description des outils disponibles
-    # à partir du catalogue défini dans le domaine.
+    # On récupère le catalogue via le port défini dans le domaine.
+    # L'application ne connaît pas directement ToolRegistry.
+    tools = tool_registry.get_tools()
+
+    # On transforme les définitions d'outils en texte
+    # pour les présenter au modèle dans le prompt.
     tools_description = "\n".join(
         f"- {tool.name.value} : {tool.description}"
-        for tool in TOOL_CATALOG
+        for tool in tools
     )
 
     # Le prompt donne au modèle une règle très stricte :
@@ -83,6 +87,6 @@ Question de l'utilisateur :
         return Plan(tool=ToolName.LISTER_ARTICLES)
 
     # Toute autre réponse du modèle est considérée comme hors périmètre.
-    # Cela permet d'éviter qu'une réponse inattendue entraîne l'exécution
+    # Cela évite qu'une réponse inattendue entraîne l'exécution
     # d'un outil qui n'a pas été explicitement autorisé.
     return Plan(tool=None)

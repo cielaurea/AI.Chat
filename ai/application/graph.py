@@ -1,33 +1,41 @@
+from application.execute import ToolExecutor
 from application.nodes.plan import create_plan
 from application.respond import Response, create_response
-from application.execute import ToolExecutor
-from infrastructure.data.dummyjson_client import DummyJsonClient
+from domain.ports import DataProviderPort, LlmProviderPort, ToolRegistryPort
 
 
-def run_chat(message: str) -> Response:
+def run_chat(
+    message: str,
+    llm_provider: LlmProviderPort,
+    data_provider: DataProviderPort,
+    tool_registry: ToolRegistryPort,
+) -> Response:
     """
     Exécute le parcours complet d'une demande utilisateur.
 
     Le workflow suit trois étapes :
-    1. planifier la demande ;
+    1. décider quel outil utiliser ;
     2. exécuter l'outil sélectionné ;
     3. préparer la réponse finale.
 
-    Cette fonction représente le point d'entrée de la logique
-    applicative avant son exposition par l'API FastAPI.
+    Les dépendances techniques sont reçues depuis l'extérieur.
+    La couche application ne crée donc aucune implémentation
+    provenant de l'infrastructure.
     """
 
-    # On crée le fournisseur de données concret.
-    # Il sera utilisé par ToolExecutor pour récupérer les données.
-    data_provider = DummyJsonClient()
-
-    # ToolExecutor utilise le port du domaine,
-    # sans avoir besoin de connaître les détails de l'API externe.
+    # ToolExecutor utilise le port DataProviderPort.
+    # Il ne connaît pas l'API DummyJSON concrète.
     executor = ToolExecutor(data_provider)
 
     # Première étape : analyser la demande et déterminer
     # quel outil doit éventuellement être utilisé.
-    plan = create_plan(message)
+    #
+    # Le modèle et le catalogue sont également reçus via leurs ports.
+    plan = create_plan(
+        message=message,
+        llm_provider=llm_provider,
+        tool_registry=tool_registry,
+    )
 
     # Si aucune demande autorisée n'a été détectée,
     # on prépare directement une réponse hors périmètre.
@@ -38,9 +46,11 @@ def run_chat(message: str) -> Response:
         )
 
     # Deuxième étape : exécuter l'outil choisi par le plan.
+    # Les données proviennent donc du fournisseur de données
+    # réellement injecté dans l'application.
     data = executor.execute(plan.tool)
 
-    # Troisième étape : transformer le résultat de l'exécution
+    # Troisième étape : transformer les données réellement reçues
     # en réponse structurée destinée à l'utilisateur.
     return create_response(
         tool=plan.tool.value,

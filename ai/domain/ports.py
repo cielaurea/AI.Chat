@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from domain.entities import Article, Client
+from domain.tools import ToolDefinition
 
 
 class DataProviderPort(ABC):
@@ -54,5 +55,30 @@ class LlmProviderPort(ABC):
 
         L'application utilise cette méthode sans connaître
         la technologie utilisée derrière.
+        """
+        pass
+
+
+class ToolRegistryPort(ABC):
+    """
+    Interface permettant à l'application d'accéder au catalogue des outils.
+
+    L'application a besoin de connaître les outils disponibles
+    pour pouvoir les présenter au modèle lors de l'étape « Décider ».
+
+    Elle ne doit cependant pas connaître la manière dont ce catalogue
+    est stocké ou construit.
+
+    L'implémentation concrète sera placée dans
+    infrastructure/tools/registry.py.
+    """
+
+    @abstractmethod
+    def get_tools(self) -> list[ToolDefinition]:
+        """
+        Retourne la liste des outils disponibles pour l'assistant.
+
+        L'application reçoit uniquement les définitions des outils
+        et ne connaît pas leur stockage concret.
         """
         pass
