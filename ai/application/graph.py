@@ -1,13 +1,13 @@
 from application.execute import ToolExecutor
 from application.nodes.plan import create_plan
 from application.respond import Response, create_response
-from domain.ports import DataProviderPort, LlmProviderPort, ToolRegistryPort
+from domain.ports import DataClientPort, LlmProviderPort, ToolRegistryPort
 
 
 def run_chat(
     message: str,
     llm_provider: LlmProviderPort,
-    data_provider: DataProviderPort,
+    data_provider: DataClientPort,
     tool_registry: ToolRegistryPort,
 ) -> Response:
     """
@@ -23,7 +23,7 @@ def run_chat(
     provenant de l'infrastructure.
     """
 
-    # ToolExecutor utilise le port DataProviderPort.
+    # ToolExecutor utilise le port DataClientPort.
     # Il ne connaît pas l'API DummyJSON concrète.
     executor = ToolExecutor(data_provider)
 

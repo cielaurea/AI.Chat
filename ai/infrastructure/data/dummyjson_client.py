@@ -1,12 +1,12 @@
 import httpx
 
 from domain.entities import Article, Client
-from domain.ports import DataProviderPort
+from domain.ports import DataClientPort
 
 
-class DummyJsonClient(DataProviderPort):
+class DummyJsonClient(DataClientPort):
     """
-    Implémentation du port DataProviderPort avec l'API DummyJSON.
+    Implémentation du port DataClientPort avec l'API DummyJSON.
 
     Cette classe appartient à l'infrastructure :
     elle connaît donc le détail de communication avec l'API externe.

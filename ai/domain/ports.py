@@ -4,7 +4,7 @@ from domain.entities import Article, Client
 from domain.tools import ToolDefinition
 
 
-class DataProviderPort(ABC):
+class DataClientPort(ABC):
     """
     Interface utilisée par l'application pour accéder aux données.
 

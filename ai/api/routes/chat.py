@@ -20,7 +20,7 @@ router = APIRouter()
 # Les implémentations concrètes sont créées ici, à la frontière de l'application.
 #
 # La couche application ne connaît que les ports :
-# LlmProviderPort, DataProviderPort et ToolRegistryPort.
+# LlmProviderPort, DataClientPort et ToolRegistryPort.
 #
 # C'est donc l'API qui assemble les différentes implémentations
 # nécessaires au fonctionnement réel du service.

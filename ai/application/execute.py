@@ -1,5 +1,5 @@
 from domain.entities import Article, Client
-from domain.ports import DataProviderPort
+from domain.ports import DataClientPort
 from domain.tools import ToolName
 
 
@@ -11,10 +11,10 @@ class ToolExecutor:
     Elle ne connaît pas DummyJSON ni la manière dont les données
     sont réellement récupérées.
 
-    Elle utilise uniquement le port DataProviderPort défini dans le domaine.
+    Elle utilise uniquement le port DataClientPort défini dans le domaine.
     """
 
-    def __init__(self, data_provider: DataProviderPort):
+    def __init__(self, data_provider: DataClientPort):
         """
         Initialise l'exécuteur avec un fournisseur de données.
 
