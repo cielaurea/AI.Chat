@@ -12,21 +12,20 @@ class OllamaProvider(LlmProviderPort):
     les détails techniques nécessaires pour communiquer avec Ollama :
     URL, clé API, modèle et format de la requête HTTP.
 
-    La couche application n'utilisera pas directement cette classe.
-    Elle utilisera uniquement LlmProviderPort.
+    La couche application n'utilise pas directement cette classe.
+    Elle utilise uniquement LlmProviderPort.
     """
 
     def generate(self, prompt: str) -> str:
         """
         Envoie un prompt à Ollama Cloud et retourne la réponse du modèle.
 
-        Le prompt est fourni par la couche application.
-        Cette classe se charge uniquement de la communication technique
-        avec l'API Ollama.
+        Le modèle doit uniquement choisir une valeur parmi les outils
+        disponibles ou "aucun". La génération est donc volontairement
+        limitée afin d'éviter qu'il produise une réponse longue.
         """
 
-        # L'URL, la clé API et le modèle sont récupérés depuis la configuration.
-        # Ces informations ne sont donc pas écrites directement dans le code.
+        # L'URL, la clé API et le modèle proviennent de la configuration.
         response = httpx.post(
             f"{settings.OLLAMA_BASE_URL}/api/chat",
             headers={
@@ -42,6 +41,12 @@ class OllamaProvider(LlmProviderPort):
                     }
                 ],
                 "stream": False,
+                "options": {
+                    # Le modèle doit prendre une décision déterministe.
+                    "temperature": 0,
+                    # Les réponses attendues sont extrêmement courtes.
+                    "num_predict": 5,
+                },
             },
             timeout=60.0,
         )
