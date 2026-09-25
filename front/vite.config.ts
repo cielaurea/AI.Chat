@@ -2,21 +2,31 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // Configuration de Vite pour l'application React.
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(() => {
+  const apiUrl = process.env.VITE_API_URL;
 
-  // Le frontend utilise /api pour communiquer avec le service IA.
-  // Vite redirige ces requêtes vers FastAPI pendant le développement.
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8000",
-        changeOrigin: true,
+  if (!apiUrl) {
+    throw new Error("VITE_API_URL est requis.");
+  }
 
-        // Transforme /api/chat en /chat avant d'envoyer
-        // la requête au service FastAPI.
-        rewrite: (path) => path.replace(/^\/api/, ""),
+  return {
+    plugins: [react()],
+
+    server: {
+      watch: {
+        // Nécessaire pour détecter les modifications dans Docker.
+        usePolling: true,
+      },
+
+      proxy: {
+        "/api": {
+          target: apiUrl,
+          changeOrigin: true,
+
+          // /api/chat devient /chat côté FastAPI.
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        },
       },
     },
-  },
+  };
 });

@@ -13,6 +13,8 @@ import { useChat } from "./hooks/useChat";
  * Il n'y a pas de routeur ni de gestionnaire d'état global,
  * conformément au périmètre demandé dans le sujet.
  */
+
+// // Test du hot reload depuis Windows
 function App() {
   // Récupère l'état de la conversation et l'action permettant
   // d'envoyer un nouveau message au service IA.
@@ -27,4 +29,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;// Test depuis Docker

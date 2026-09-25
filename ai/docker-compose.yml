@@ -1,0 +1,12 @@
+services:
+  ia:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - .:/app
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
