@@ -1,28 +1,11 @@
 import type { ReponseChat } from "../types/chat";
 
-/**
- * Adresse relative utilisée pour appeler le service IA.
- *
- * En développement, Vite pourra rediriger /api vers FastAPI
- * grâce au proxy configuré dans vite.config.ts.
- *
- * Le frontend ne connaît donc pas directement l'adresse
- * de DummyJSON : il communique uniquement avec notre service IA.
- */
+/* Adresse utilisée pour appeler le service IA via le proxy Vite. */
 const CHAT_ENDPOINT = "/api/chat";
 
-/**
- * Envoie un message utilisateur au service IA.
- *
- * Cette fonction constitue l'unique point d'appel HTTP
- * du frontend vers notre API de conversation.
- *
- * @param message Question saisie par l'utilisateur.
- * @returns La réponse structurée du service IA.
- * @throws Error si le service ne répond pas correctement.
- */
+/* Envoie une question au service IA et retourne sa réponse. */
 export async function sendMessage(message: string): Promise<ReponseChat> {
-  // Envoie la question au endpoint POST /chat du service IA.
+  /* Envoie la question au endpoint POST /chat du service IA. */
   const response = await fetch(CHAT_ENDPOINT, {
     method: "POST",
     headers: {
@@ -33,16 +16,14 @@ export async function sendMessage(message: string): Promise<ReponseChat> {
     }),
   });
 
-  // Une réponse HTTP non réussie doit être signalée
-  // afin que l'interface puisse afficher une erreur lisible.
+  /* Signale une erreur si la réponse HTTP n'est pas réussie. */
   if (!response.ok) {
     throw new Error("Le service IA ne répond pas correctement.");
   }
 
-  // Transforme la réponse JSON en objet JavaScript.
+  /* Transforme la réponse JSON en objet correspondant à notre type. */
   const data: ReponseChat = await response.json();
 
-  // Retourne uniquement les données correspondant
-  // au contrat attendu par le frontend.
+  /* Retourne la réponse structurée au hook useChat. */
   return data;
 }
