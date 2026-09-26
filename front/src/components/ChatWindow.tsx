@@ -17,14 +17,14 @@ export function ChatWindow({
   isLoading,
   onSend,
 }: ChatWindowProps) {
-  /* Conserve le thème actuellement choisi par l'utilisateur. */
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  /* Active le mode sombre par défaut. */
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   /* Applique le thème choisi à toute la page. */
   useEffect(() => {
     document.body.classList.toggle("dark-page", isDarkMode);
 
-    /* Supprime la classe lorsque le composant est démonté. */
+    /* Supprime la classe lorsque le composant est démonté */
     return () => {
       document.body.classList.remove("dark-page");
     };
@@ -32,11 +32,9 @@ export function ChatWindow({
 
   return (
     <main className={`chat-window ${isDarkMode ? "dark-mode" : "light-mode"}`}>
-      {/* En-tête contenant le titre, le sous-titre et le bouton de thème. */}
       <header className="chat-header">
         <div>
-          <h1>Assistant Dataven</h1>
-          <p>Clients et articles</p>
+          <h1>Assistant AI</h1>
         </div>
 
         {/* Permet de passer entre le thème clair et le thème sombre. */}

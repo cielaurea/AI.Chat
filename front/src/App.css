@@ -1,4 +1,4 @@
-/*Thème clair : fond blanc et gris très léger.*/
+/* Thème clair : fond blanc et gris très léger. */
 .light-mode {
   --background: #f5f5f5;
   --surface: #ffffff;
@@ -6,9 +6,9 @@
   --border: #dddddd;
   --text: #1a1a1a;
   --text-secondary: #666666;
-  --accent: #70362E;
-  --accent-hover: #5C2C26;
-  --user-message: #70362E;
+  --accent: #019875;
+  --accent-hover: #017A5E;
+  --user-message: #019875;
   --assistant-message: #ffffff;
 }
 
@@ -20,15 +20,13 @@
   --border: #333333;
   --text: #f5f5f5;
   --text-secondary: #aaaaaa;
-  --accent: #70362E;
-  --accent-hover: #5C2C26;
-  --user-message: #70362E;
+  --accent: #019875;
+  --accent-hover: #017A5E;
+  --user-message: #019875;
   --assistant-message: #181818;
 }
 
-
-/*Fond global */
-
+/* Fond global */
 
 body.dark-page {
   background: #101010;
@@ -36,11 +34,11 @@ body.dark-page {
 }
 
 
-/*  Fenêtre de conversation*/
+/* Fenêtre de conversation */
 
 .chat-window {
   width: min(100%, 1100px);
-  min-height: 100vh;
+  height: 100vh;
   margin: 0 auto;
 
   display: flex;
@@ -55,7 +53,7 @@ body.dark-page {
 }
 
 
-/*En-tête */
+/* En-tête */
 
 .chat-header {
   display: flex;
@@ -85,7 +83,7 @@ body.dark-page {
 }
 
 
-/*Bouton de thème */
+/* Bouton de thème */
 
 .theme-toggle {
   display: inline-flex;
@@ -134,6 +132,7 @@ body.dark-page {
 
 .chat-content {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
 
   padding: 24px;
@@ -143,8 +142,26 @@ body.dark-page {
   transition: background-color 0.2s ease;
 }
 
+/* Barre de défilement de la conversation */
 
-/*Liste des messages */
+.chat-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-content::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 999px;
+}
+
+.chat-content::-webkit-scrollbar-thumb:hover {
+  background: #019875;
+}
+
+/* Liste des messages */
 
 .message-list {
   display: flex;
@@ -153,7 +170,7 @@ body.dark-page {
 }
 
 
-/*Bulles de conversation */
+/* Bulles de conversation */
 
 .message-bubble {
   width: fit-content;
@@ -171,7 +188,7 @@ body.dark-page {
   margin: 0;
 }
 
-/* Message de l'utilisateur.*/
+/* Message de l'utilisateur. */
 .message-bubble-user {
   margin-left: auto;
 
@@ -181,7 +198,7 @@ body.dark-page {
   border-bottom-right-radius: 4px;
 }
 
-/* Message de l'assistant.*/
+/* Message de l'assistant. */
 .message-bubble-assistant {
   margin-right: auto;
 
@@ -193,7 +210,7 @@ body.dark-page {
 }
 
 
-/*Tableau des données */
+/* Tableau des données */
 
 .data-table-container {
   width: 100%;
@@ -242,7 +259,7 @@ body.dark-page {
 }
 
 
-/* Indicateur de chargement*/
+/* Indicateur de chargement */
 
 .loading-indicator {
   width: fit-content;
