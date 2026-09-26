@@ -6,12 +6,7 @@ from domain.entities import Article, Client
 @dataclass
 class Response:
     """
-    Représente la réponse finale préparée par l'application.
-
-    Elle contient :
-    - un texte destiné à l'utilisateur ;
-    - le nom de l'outil utilisé, s'il y en a un ;
-    - les données récupérées.
+    Contient la réponse finale préparée par l'application.
     """
 
     message: str
@@ -24,13 +19,10 @@ def create_response(
     data: list[Client] | list[Article],
 ) -> Response:
     """
-    Prépare une réponse à partir de l'outil exécuté et de ses données.
-
-    Cette fonction ne récupère aucune donnée et ne contacte aucune API.
-    Elle prépare uniquement le résultat qui sera transmis à l'utilisateur.
+    Prépare la réponse finale à partir de l'outil utilisé et des données.
     """
 
-    # Si aucun outil n'a été sélectionné, la demande est hors périmètre.
+    # Si aucun outil n'a été sélectionné, la demande est hors périmètre
     if tool is None:
         return Response(
             message="Désolé, je ne peux répondre qu'aux demandes concernant les clients et les articles.",
@@ -38,8 +30,7 @@ def create_response(
             data=[],
         )
 
-    # Si l'outil utilisé est celui des clients,
-    # on prépare un message indiquant combien de clients ont été récupérés.
+    # Prépare la réponse pour les clients
     if tool == "lister_clients":
         return Response(
             message=f"Voici les {len(data)} premiers clients.",
@@ -47,8 +38,7 @@ def create_response(
             data=data,
         )
 
-    # Si l'outil utilisé est celui des articles,
-    # on prépare un message indiquant combien d'articles ont été récupérés.
+    # Prépare la réponse pour les articles
     if tool == "lister_articles":
         return Response(
             message=f"Voici les {len(data)} premiers articles.",
@@ -56,6 +46,5 @@ def create_response(
             data=data,
         )
 
-    # Sécurité supplémentaire : un outil inconnu ne doit pas
-    # produire une réponse inattendue.
+    # Un outil inconnu indique un problème dans le workflow
     raise ValueError(f"Outil inconnu : {tool}")

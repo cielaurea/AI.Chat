@@ -1,38 +1,23 @@
 import type { Article, Client } from "../types/chat";
 
-/**
- * Propriétés nécessaires pour afficher les données reçues du service IA.
- *
- * Le composant reçoit uniquement les données nettoyées par le backend.
- * Il ne connaît donc pas la structure interne de DummyJSON.
- */
+/* Propriétés nécessaires pour afficher les données reçues du service IA. */
 interface DataTableProps {
   data: Client[] | Article[];
 }
 
-/**
- * Vérifie si les données correspondent à une liste de clients.
- *
- * Le champ "nom" existe uniquement dans l'interface Client.
- */
+/* Vérifie si les données correspondent à une liste de clients. */
 function isClientList(data: Client[] | Article[]): data is Client[] {
   return data.length === 0 || "nom" in data[0];
 }
 
-/**
- * Affiche les données structurées reçues du service IA.
- *
- * Les clients et les articles sont présentés sous forme de tableau
- * afin d'éviter d'afficher directement le JSON reçu par l'API.
- */
+/* Affiche les clients ou les articles sous forme de tableau. */
 export function DataTable({ data }: DataTableProps) {
-  // Une réponse sans données ne nécessite aucun tableau.
+  /* Une réponse sans données ne nécessite aucun tableau. */
   if (data.length === 0) {
     return null;
   }
 
-  // Si les données sont celles des clients, on affiche
-  // les colonnes correspondant à l'entité Client.
+  /* Si les données sont des clients, affiche les colonnes correspondantes. */
   if (isClientList(data)) {
     return (
       <div className="data-table-container">
@@ -63,8 +48,7 @@ export function DataTable({ data }: DataTableProps) {
     );
   }
 
-  // Si les données ne sont pas des clients, elles correspondent
-  // aux articles définis dans notre contrat frontend.
+  /* Si ce ne sont pas des clients, les données correspondent aux articles. */
   const articles = data as Article[];
 
   return (

@@ -1,49 +1,32 @@
 import { useState, type FormEvent } from "react";
 
-/**
- * Propriétés nécessaires pour le composant Composer.
- *
- * Le composant reçoit uniquement l'action d'envoi
- * et l'état de chargement depuis le composant parent.
- */
+/* Propriétés nécessaires pour le composant Composer. */
 interface ComposerProps {
   onSend: (message: string) => void;
   isLoading: boolean;
 }
 
-/**
- * Zone de saisie permettant à l'utilisateur d'écrire
- * et d'envoyer une question à l'assistant.
- *
- * Ce composant ne connaît pas l'API et ne gère pas
- * directement les requêtes HTTP.
- */
+/* Permet à l'utilisateur de saisir et d'envoyer une question. */
 export function Composer({ onSend, isLoading }: ComposerProps) {
-  // Contient le texte actuellement saisi par l'utilisateur.
+  /* Contient le texte actuellement saisi par l'utilisateur. */
   const [message, setMessage] = useState("");
 
-  /**
-   * Gère l'envoi du formulaire.
-   *
-   * L'utilisation d'un formulaire permet notamment
-   * de déclencher l'envoi avec la touche Entrée.
-   */
+  /* Gère l'envoi du formulaire. */
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    // Empêche le rechargement de la page provoqué
-    // normalement par l'envoi d'un formulaire HTML.
+    /* Empêche le rechargement de la page lors de l'envoi. */
     event.preventDefault();
 
-    // Évite d'envoyer un message vide ou uniquement composé d'espaces.
+    /* Supprime les espaces inutiles avant l'envoi. */
     const trimmedMessage = message.trim();
 
     if (!trimmedMessage || isLoading) {
       return;
     }
 
-    // Transmet le message au hook useChat via le composant parent.
+    /* Transmet le message au composant parent. */
     onSend(trimmedMessage);
 
-    // Vide la zone de saisie après l'envoi.
+    /* Vide la zone de saisie après l'envoi. */
     setMessage("");
   }
 
@@ -59,8 +42,7 @@ export function Composer({ onSend, isLoading }: ComposerProps) {
         aria-label="Question"
       />
 
-      {/* Le bouton utilise le formulaire : cliquer dessus
-          déclenche donc également handleSubmit. */}
+      {/* Déclenche handleSubmit lors du clic. */}
       <button
         type="submit"
         disabled={isLoading || !message.trim()}

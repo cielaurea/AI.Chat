@@ -12,18 +12,11 @@ from infrastructure.providers.ollama_provider import OllamaProvider
 from infrastructure.tools.registry import ToolRegistry
 
 
-# Crée un routeur FastAPI dédié aux routes de conversation.
-# Le routeur sera ensuite enregistré dans api/main.py.
+# Routeur dédié aux conversations.
 router = APIRouter()
 
 
-# Les implémentations concrètes sont créées ici, à la frontière de l'application.
-#
-# La couche application ne connaît que les ports :
-# LlmProviderPort, DataClientPort et ToolRegistryPort.
-#
-# C'est donc l'API qui assemble les différentes implémentations
-# nécessaires au fonctionnement réel du service.
+# Création des implémentations utilisées par le workflow.
 llm_provider = OllamaProvider()
 data_provider = DummyJsonClient()
 tool_registry = ToolRegistry()
@@ -31,20 +24,8 @@ tool_registry = ToolRegistry()
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
-    """
-    Reçoit une question de l'utilisateur et retourne la réponse de l'assistant.
 
-    Le parcours complet est réalisé par la couche application :
-    1. le modèle décide quel outil utiliser ;
-    2. l'outil récupère les données ;
-    3. l'application prépare la réponse finale.
-
-    Cette route se charge uniquement de faire le lien
-    entre HTTP et la couche application.
-    """
-
-    # On transmet le message reçu à notre workflow applicatif.
-    # Les implémentations concrètes sont injectées via leurs ports.
+    # Le workflow s'occupe de traiter la demande.
     result = run_chat(
         message=request.message,
         llm_provider=llm_provider,
@@ -52,7 +33,7 @@ def chat(request: ChatRequest) -> ChatResponse:
         tool_registry=tool_registry,
     )
 
-    # Une demande hors périmètre produit une réponse sans données.
+    # Si la demande est hors périmètre, aucune donnée n'est renvoyée.
     if result.tool is None:
         return ChatResponse(
             reponse=result.message,
@@ -60,8 +41,7 @@ def chat(request: ChatRequest) -> ChatResponse:
             donnees=[],
         )
 
-    # Si l'outil utilisé concerne les clients,
-    # on transforme les entités Client en modèles de réponse API.
+    # Transforme les clients du domaine en données adaptées à l'API.
     if result.tool == "lister_clients":
         donnees = [
             ClientData(
@@ -74,8 +54,7 @@ def chat(request: ChatRequest) -> ChatResponse:
             for client in result.data
         ]
 
-    # Si l'outil utilisé concerne les articles,
-    # on transforme les entités Article en modèles de réponse API.
+    # Transforme les articles du domaine en données adaptées à l'API.
     elif result.tool == "lister_articles":
         donnees = [
             ArticleData(
@@ -89,13 +68,10 @@ def chat(request: ChatRequest) -> ChatResponse:
             for article in result.data
         ]
 
-    # Cette situation ne devrait normalement jamais arriver,
-    # car le workflow n'autorise que les outils définis dans le domaine.
     else:
         raise ValueError(f"Outil inconnu : {result.tool}")
 
-    # FastAPI transformera automatiquement ce modèle Pydantic
-    # en JSON correspondant exactement au contrat de l'API.
+    # Retourne la réponse au frontend au format prévu par l'API.
     return ChatResponse(
         reponse=result.message,
         outil=result.tool,

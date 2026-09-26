@@ -4,10 +4,7 @@ from enum import Enum
 
 class ToolName(str, Enum):
     """
-    Noms des outils que l'assistant est autorisé à utiliser.
-
-    Le modèle pourra choisir uniquement l'un de ces outils
-    ou aucun outil si la demande est hors périmètre.
+    Définit les outils disponibles pour l'assistant
     """
 
     LISTER_CLIENTS = "lister_clients"
@@ -17,10 +14,7 @@ class ToolName(str, Enum):
 @dataclass(frozen=True)
 class ToolDefinition:
     """
-    Décrit un outil disponible dans le catalogue.
-
-    Le catalogue fournit au modèle les informations nécessaires
-    pour comprendre ce que fait chaque outil.
+    Décrit un outil disponible dans le catalogue
     """
 
     name: ToolName
@@ -28,9 +22,7 @@ class ToolDefinition:
     parameters: dict[str, object]
 
 
-# Catalogue officiel des outils disponibles pour l'assistant.
-# Il sera utilisé lors de l'étape « Décider » pour présenter
-# les possibilités au modèle.
+# Catalogue des outils disponibles pour l'assistant
 TOOL_CATALOG = [
     ToolDefinition(
         name=ToolName.LISTER_CLIENTS,

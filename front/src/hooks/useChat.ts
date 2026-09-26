@@ -3,18 +3,7 @@ import { useState } from "react";
 import { sendMessage } from "../api/chatClient";
 import type { Message } from "../types/chat";
 
-/**
- * Gère l'état et le comportement de la conversation.
- *
- * Ce hook centralise :
- * - la liste des messages ;
- * - l'envoi d'un message au service IA ;
- * - l'état de chargement ;
- * - l'affichage d'une erreur dans la conversation.
- *
- * Les composants graphiques n'ont donc pas besoin
- * de connaître les détails de l'appel HTTP.
- */
+// Gère l'état de la conversation et les appels au service IA.
 export function useChat() {
   // Contient tous les messages affichés dans la conversation.
   const [messages, setMessages] = useState<Message[]>([]);
@@ -24,9 +13,6 @@ export function useChat() {
 
   /**
    * Envoie une question au service IA.
-   *
-   * Le message utilisateur est d'abord ajouté à la conversation.
-   * Le service IA est ensuite appelé via sendMessage().
    */
   async function sendUserMessage(message: string): Promise<void> {
     // Évite d'envoyer un message vide ou composé uniquement d'espaces.
@@ -36,8 +22,7 @@ export function useChat() {
       return;
     }
 
-    // Ajoute immédiatement la question de l'utilisateur
-    // afin qu'elle apparaisse dans la conversation.
+    // Ajoute la question de l'utilisateur à la conversation.
     setMessages((currentMessages) => [
       ...currentMessages,
       {
@@ -53,7 +38,7 @@ export function useChat() {
       // Envoie la question au service IA.
       const response = await sendMessage(trimmedMessage);
 
-      // Ajoute la réponse de l'assistant ainsi que les données structurées.
+      // Ajoute la réponse de l'assistant et les données structurées.
       setMessages((currentMessages) => [
         ...currentMessages,
         {
@@ -63,8 +48,7 @@ export function useChat() {
         },
       ]);
     } catch {
-      // En cas de problème réseau ou serveur,
-      // on affiche une erreur lisible directement dans la conversation.
+      // Affiche un message lisible en cas d'erreur.
       setMessages((currentMessages) => [
         ...currentMessages,
         {
@@ -74,14 +58,12 @@ export function useChat() {
         },
       ]);
     } finally {
-      // Désactive toujours le chargement, que la requête
-      // ait réussi ou échoué.
+      // Arrête le chargement, que la requête réussisse ou échoue.
       setIsLoading(false);
     }
   }
 
-  // Le composant qui utilise ce hook reçoit uniquement
-  // les informations et l'action dont il a besoin.
+  // Retourne les données et l'action nécessaires à l'interface.
   return {
     messages,
     isLoading,

@@ -6,50 +6,40 @@ from domain.ports import DataClientPort
 
 class DummyJsonClient(DataClientPort):
     """
-    Implémentation du port DataClientPort avec l'API DummyJSON.
-
-    Cette classe appartient à l'infrastructure :
-    elle connaît donc le détail de communication avec l'API externe.
+    Communique avec DummyJSON et transforme ses données
+    dans les formats utilisés par l'application.
     """
 
-    # URL de base de l'API externe utilisée pour récupérer les données.
     BASE_URL = "https://dummyjson.com"
 
     def get_users(self) -> list[dict]:
-        """Récupère les 10 premiers utilisateurs depuis DummyJSON."""
+        """Récupère les 10 premiers utilisateurs."""
         response = httpx.get(
             f"{self.BASE_URL}/users",
             params={"limit": 10},
             timeout=10.0,
         )
 
-        # Déclenche une erreur si l'API retourne un code HTTP d'erreur.
         response.raise_for_status()
 
-        # DummyJSON renvoie les utilisateurs dans la clé "users".
+        # Récupère la liste des utilisateurs dans la réponse JSON.
         return response.json()["users"]
 
     def get_products(self) -> list[dict]:
-        """Récupère les 10 premiers articles depuis DummyJSON."""
+        """Récupère les 10 premiers produits."""
         response = httpx.get(
             f"{self.BASE_URL}/products",
             params={"limit": 10},
             timeout=10.0,
         )
 
-        # Déclenche une erreur si l'API retourne un code HTTP d'erreur.
         response.raise_for_status()
 
-        # DummyJSON renvoie les articles dans la clé "products".
+        # Récupère la liste des produits dans la réponse JSON.
         return response.json()["products"]
 
     def get_clients(self) -> list[Client]:
-        """
-        Transforme les utilisateurs de DummyJSON en entités Client.
-
-        DummyJSON utilise plusieurs objets imbriqués.
-        Ici, on les transforme dans le format utilisé par notre domaine.
-        """
+        """Transforme les utilisateurs en entités Client."""
         users = self.get_users()
 
         return [
@@ -64,12 +54,7 @@ class DummyJsonClient(DataClientPort):
         ]
 
     def get_articles(self) -> list[Article]:
-        """
-        Transforme les produits de DummyJSON en entités Article.
-
-        Cette méthode masque complètement la structure de DummyJSON
-        au reste de l'application.
-        """
+        """Transforme les produits en entités Article."""
         products = self.get_products()
 
         return [

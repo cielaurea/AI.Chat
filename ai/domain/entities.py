@@ -4,10 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Client:
     """
-    Représente un client dans notre domaine métier.
-
-    Cette entité ne dépend pas de DummyJSON :
-    elle contient uniquement les informations dont notre application a besoin.
+    Représente un client utilisé par l'application.
     """
 
     id: int
@@ -20,10 +17,7 @@ class Client:
 @dataclass
 class Article:
     """
-    Représente un article dans notre domaine métier.
-
-    La structure est volontairement indépendante
-    de la structure utilisée par l'API DummyJSON.
+    Représente un article utilisé par l'application.
     """
 
     id: int

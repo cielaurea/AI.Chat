@@ -2,22 +2,12 @@ import type { Message } from "../types/chat";
 import { DataTable } from "./DataTable";
 import { MessageBubble } from "./MessageBubble";
 
-/**
- * Propriétés nécessaires pour afficher la liste des messages.
- */
+/* Propriétés nécessaires pour afficher la liste des messages. */
 interface MessageListProps {
   messages: Message[];
 }
 
-/**
- * Affiche tous les messages de la conversation dans leur ordre.
- *
- * Lorsqu'une réponse de l'assistant contient des données,
- * le tableau correspondant est affiché immédiatement sous cette réponse.
- *
- * Ainsi, chaque question et sa réponse restent regroupées
- * avec les données qui lui correspondent.
- */
+/* Affiche les messages dans leur ordre avec les données associées. */
 export function MessageList({ messages }: MessageListProps) {
   return (
     <div className="message-list">
@@ -26,8 +16,7 @@ export function MessageList({ messages }: MessageListProps) {
           {/* Affiche la bulle du message courant. */}
           <MessageBubble message={message} />
 
-          {/* Affiche le tableau uniquement pour une réponse
-              de l'assistant contenant des données. */}
+          {/* Affiche le tableau si la réponse contient des données. */}
           {message.role === "assistant" && message.reponse && (
             <DataTable data={message.reponse.donnees} />
           )}

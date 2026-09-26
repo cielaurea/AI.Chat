@@ -1,7 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// Configuration de Vite pour l'application React.
+//configuration de Vite 
 export default defineConfig(() => {
   const apiUrl = process.env.VITE_API_URL;
 
@@ -14,7 +14,7 @@ export default defineConfig(() => {
 
     server: {
       watch: {
-        // Nécessaire pour détecter les modifications dans Docker.
+        // Permet à Vite de détecter les modifications dans Docker
         usePolling: true,
       },
 
@@ -23,7 +23,7 @@ export default defineConfig(() => {
           target: apiUrl,
           changeOrigin: true,
 
-          // /api/chat devient /chat côté FastAPI.
+          // /api/chat devient /chat côté FastAPI
           rewrite: (path) => path.replace(/^\/api/, ""),
         },
       },

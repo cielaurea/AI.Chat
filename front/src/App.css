@@ -1,10 +1,4 @@
-/* ==========================================================================
-   Thèmes de l'application
-   ========================================================================== */
-
-/*
- * Thème clair : fond blanc et gris très léger.
- */
+/*Thème clair : fond blanc et gris très léger.*/
 .light-mode {
   --background: #f5f5f5;
   --surface: #ffffff;
@@ -18,12 +12,7 @@
   --assistant-message: #ffffff;
 }
 
-/*
- * Thème sombre : véritable gris/noir.
- *
- * On évite volontairement les tons bleus afin d'obtenir
- * un mode sombre neutre et proche des interfaces modernes.
- */
+
 .dark-mode {
   --background: #101010;
   --surface: #181818;
@@ -38,23 +27,16 @@
 }
 
 
-/* ==========================================================================
-   Fond global
-   ========================================================================== */
+/*Fond global */
 
-/*
- * Le body reçoit cette classe lorsque le mode sombre est activé.
- * Cela permet de modifier toute la zone située autour du chat.
- */
+
 body.dark-page {
   background: #101010;
   color: #f5f5f5;
 }
 
 
-/* ==========================================================================
-   Fenêtre de conversation
-   ========================================================================== */
+/*  Fenêtre de conversation*/
 
 .chat-window {
   width: min(100%, 1100px);
@@ -73,9 +55,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   En-tête
-   ========================================================================== */
+/*En-tête */
 
 .chat-header {
   display: flex;
@@ -105,13 +85,8 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Bouton de thème
-   ========================================================================== */
+/*Bouton de thème */
 
-/*
- * Petit bouton arrondi plutôt qu'un gros bouton classique.
- */
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -155,9 +130,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Zone de conversation
-   ========================================================================== */
+/* Zone de conversation */
 
 .chat-content {
   flex: 1;
@@ -171,9 +144,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Liste des messages
-   ========================================================================== */
+/*Liste des messages */
 
 .message-list {
   display: flex;
@@ -182,9 +153,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Bulles de conversation
-   ========================================================================== */
+/*Bulles de conversation */
 
 .message-bubble {
   width: fit-content;
@@ -202,9 +171,7 @@ body.dark-page {
   margin: 0;
 }
 
-/*
- * Message de l'utilisateur.
- */
+/* Message de l'utilisateur.*/
 .message-bubble-user {
   margin-left: auto;
 
@@ -214,9 +181,7 @@ body.dark-page {
   border-bottom-right-radius: 4px;
 }
 
-/*
- * Message de l'assistant.
- */
+/* Message de l'assistant.*/
 .message-bubble-assistant {
   margin-right: auto;
 
@@ -228,9 +193,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Tableau des données
-   ========================================================================== */
+/*Tableau des données */
 
 .data-table-container {
   width: 100%;
@@ -279,9 +242,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Indicateur de chargement
-   ========================================================================== */
+/* Indicateur de chargement*/
 
 .loading-indicator {
   width: fit-content;
@@ -299,9 +260,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Zone de saisie
-   ========================================================================== */
+/* Zone de saisie */
 
 .composer {
   display: flex;
@@ -372,9 +331,7 @@ body.dark-page {
 }
 
 
-/* ==========================================================================
-   Adaptation aux petits écrans
-   ========================================================================== */
+/* Adaptation aux petits écrans */
 
 @media (max-width: 700px) {
   .chat-header {

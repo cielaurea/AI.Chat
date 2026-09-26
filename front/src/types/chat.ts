@@ -1,9 +1,4 @@
-/**
- * Représente un client reçu depuis le service IA.
- *
- * Le backend a déjà transformé les données DummyJSON
- * dans cette structure avant de les envoyer au frontend.
- */
+/* Représente un client reçu depuis le service IA. */
 export interface Client {
   id: number;
   nom: string;
@@ -12,12 +7,7 @@ export interface Client {
   ville: string;
 }
 
-/**
- * Représente un article reçu depuis le service IA.
- *
- * Le frontend ne connaît pas la structure interne de DummyJSON :
- * il utilise uniquement les données propres fournies par notre API.
- */
+/* Représente un article reçu depuis le service IA. */
 export interface Article {
   id: number;
   titre: string;
@@ -27,27 +17,14 @@ export interface Article {
   marque: string;
 }
 
-/**
- * Représente la réponse de POST /chat.
- *
- * Le champ "outil" indique l'outil utilisé par le service IA,
- * ou null lorsqu'une demande est hors périmètre.
- *
- * "donnees" contient les données nettoyées retournées par le backend.
- */
+/* Représente la réponse de POST /chat. */
 export interface ReponseChat {
   reponse: string;
   outil: "lister_clients" | "lister_articles" | null;
   donnees: Client[] | Article[];
 }
 
-/**
- * Représente un message affiché dans la conversation.
- *
- * Un message peut venir de l'utilisateur ou de l'assistant.
- * Le champ "reponse" permet d'associer éventuellement
- * les données structurées reçues avec la réponse de l'assistant.
- */
+/* Représente un message affiché dans la conversation. */
 export interface Message {
   role: "user" | "assistant";
   contenu: string;

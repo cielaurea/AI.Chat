@@ -4,43 +4,27 @@ import type { Message } from "../types/chat";
 import { Composer } from "./Composer";
 import { MessageList } from "./MessageList";
 
-/**
- * Propriétés nécessaires pour afficher la fenêtre de conversation.
- */
+/* Propriétés nécessaires pour afficher la fenêtre de conversation. */
 interface ChatWindowProps {
   messages: Message[];
   isLoading: boolean;
   onSend: (message: string) => void;
 }
 
-/**
- * Assemble les différents composants de la conversation.
- *
- * ChatWindow ne gère pas l'appel à l'API.
- * Il reçoit les données et les actions depuis le hook useChat.
- *
- * Il gère également le choix entre le thème clair
- * et le thème sombre de toute l'application.
- */
+/* Assemble les composants de la conversation et gère le thème. */
 export function ChatWindow({
   messages,
   isLoading,
   onSend,
 }: ChatWindowProps) {
-  // Conserve le thème actuellement choisi par l'utilisateur.
+  /* Conserve le thème actuellement choisi par l'utilisateur. */
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  /**
-   * Applique le thème choisi au document entier.
-   *
-   * La classe est ajoutée au <body> afin que le fond
-   * de toute la page puisse changer, et pas uniquement
-   * celui de la fenêtre de conversation.
-   */
+  /* Applique le thème choisi à toute la page. */
   useEffect(() => {
     document.body.classList.toggle("dark-page", isDarkMode);
 
-    // Nettoie la classe lorsque le composant est démonté.
+    /* Supprime la classe lorsque le composant est démonté. */
     return () => {
       document.body.classList.remove("dark-page");
     };
@@ -70,13 +54,12 @@ export function ChatWindow({
         </button>
       </header>
 
-      {/* Zone principale contenant toute la conversation. */}
+      {/* Zone principale contenant la conversation. */}
       <section className="chat-content" aria-live="polite">
-        {/* MessageList affiche maintenant chaque tableau
-            directement sous la réponse qui lui correspond. */}
+        {/* Affiche les messages et les données associées. */}
         <MessageList messages={messages} />
 
-        {/* Indicateur visible pendant l'attente de la réponse du service IA. */}
+        {/* Affiche un indicateur pendant l'attente de la réponse. */}
         {isLoading && (
           <div className="loading-indicator" role="status">
             L'assistant réfléchit...
@@ -84,7 +67,7 @@ export function ChatWindow({
         )}
       </section>
 
-      {/* Zone de saisie permettant d'envoyer une nouvelle question. */}
+      {/* Zone de saisie pour envoyer une nouvelle question. */}
       <Composer onSend={onSend} isLoading={isLoading} />
     </main>
   );
